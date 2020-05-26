@@ -1,3 +1,7 @@
+[![Build Status](https://barradas.visualstudio.com/Contributions/_apis/build/status/NugetPackage/Serilog%20Sinks%20NewRelic%20Logs?branchName=master)](https://barradas.visualstudio.com/Contributions/_build/latest?definitionId=8&branchName=master)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Serilog.Sinks.NewRelic.Logs.svg)](https://www.nuget.org/packages/Serilog.Sinks.NewRelic.Logs/)
+[![NuGet Version](https://img.shields.io/nuget/v/Serilog.Sinks.NewRelic.Logs.svg)](https://www.nuget.org/packages/Serilog.Sinks.NewRelic.Logs/)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ThiagoBarradas_serilog-sinks-newrelic-logs&metric=alert_status)](https://sonarcloud.io/dashboard?id=ThiagoBarradas_serilog-sinks-newrelic-logs)
 
 A Serilog sink that writes events to the [NewRelic Logs](https://docs.newrelic.com/docs/logs/new-relic-logs/get-started/introduction-new-relic-logs).
 
@@ -39,6 +43,12 @@ If `newrelic.linkingmetadata` property is present in an event, it will be unroll
 ```
 PM> Install-Package Serilog.Sinks.NewRelic.Logs
 ```
+
+## Contributors
+
+This code is based on https://github.com/stanisls/serilog-sinks-newreliclogs
+
+Thanks @stanisls and @johnkattenhorn :muscle::skin-tone-3:
 
 ## How can I contribute?
 

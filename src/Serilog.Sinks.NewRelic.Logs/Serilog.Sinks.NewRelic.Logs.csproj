@@ -12,6 +12,7 @@
     <Copyright>2020 MIT License</Copyright>
     <PackageIconUrl>https://i.imgur.com/yDQoMRw.png</PackageIconUrl>
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+	<ProjectGuid>{E2CEBBAF-6DF7-4AA9-815D-9AD4CF90C844}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
