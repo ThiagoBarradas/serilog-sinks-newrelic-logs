@@ -48,7 +48,7 @@ PM> Install-Package Serilog.Sinks.NewRelic.Logs
 
 This code is based on https://github.com/stanisls/serilog-sinks-newreliclogs
 
-Thanks @stanisls and @johnkattenhorn :muscle::skin-tone-3:
+Thanks [@stanisls](https://github.com/stanisls) and [@johnkattenhorn](https://github.com/johnkattenhorn) :muscle:
 
 ## How can I contribute?
 
