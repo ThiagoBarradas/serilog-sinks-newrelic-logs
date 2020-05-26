@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.NewRelic.Logs", "src\Serilog.Sinks.NewRelic.Logs\Serilog.Sinks.NewRelic.Logs.csproj", "{F34AE60B-CFD5-464C-BF49-A9D8FA7EE424}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30EC5940-9B2D-485B-B854-F978C4B8BD5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{58888E6E-80BA-4F62-ADDF-A555B8CB6C4E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\CONTRIBUTING.md = .github\CONTRIBUTING.md
+		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
+		LICENSE = LICENSE
+		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devops", "devops", "{F891B038-B0A2-44E9-8F6A-6E14B5B39F95}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git", "git", "{A58D3608-75B5-47C4-A246-C93AC544178D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.NewRelic.Logs.Playground.NETCore31", "sample\Serilog.Sinks.NewRelic.Logs.Playground.NETCore31\Serilog.Sinks.NewRelic.Logs.Playground.NETCore31.csproj", "{5BC5D9C8-EC0A-4CC7-9EAE-EBCE01916EE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.NewRelic.Logs.Playground.NET461", "sample\Serilog.Sinks.NewRelic.Logs.Playground.NET461\Serilog.Sinks.NewRelic.Logs.Playground.NET461.csproj", "{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F34AE60B-CFD5-464C-BF49-A9D8FA7EE424}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F34AE60B-CFD5-464C-BF49-A9D8FA7EE424}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F34AE60B-CFD5-464C-BF49-A9D8FA7EE424}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F34AE60B-CFD5-464C-BF49-A9D8FA7EE424}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC5D9C8-EC0A-4CC7-9EAE-EBCE01916EE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC5D9C8-EC0A-4CC7-9EAE-EBCE01916EE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC5D9C8-EC0A-4CC7-9EAE-EBCE01916EE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC5D9C8-EC0A-4CC7-9EAE-EBCE01916EE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{58888E6E-80BA-4F62-ADDF-A555B8CB6C4E} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
+		{F891B038-B0A2-44E9-8F6A-6E14B5B39F95} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
+		{A58D3608-75B5-47C4-A246-C93AC544178D} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C95D3C20-A9C4-43CC-89F5-CFA37A2C8D83}
+	EndGlobalSection
+EndGlobal

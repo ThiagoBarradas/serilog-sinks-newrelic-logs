@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>NewRelic</Company>
+    <Authors>thiagobarradas, stanislav, johnkattenhorn</Authors>
+    <RepositoryUrl>https://github.com/thiagobarradas/serilog-sinks-newrelic-logs</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/thiagobarradas/serilog-sinks-newrelic-logs</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/thiagobarradas/serilog-sinks-newrelic-logs/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>serilog, logging, newrelic, log, newreliclogs, apm, metrics</PackageTags>
+    <Description>A Serilog sink that writes events to NewRelic Logs API.</Description>
+    <Copyright>2020 MIT License</Copyright>
+    <PackageIconUrl>https://i.imgur.com/yDQoMRw.png</PackageIconUrl>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="2.3.0" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>
