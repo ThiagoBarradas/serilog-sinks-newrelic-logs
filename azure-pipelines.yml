@@ -8,7 +8,7 @@
 
 variables:
   solution_path: 'Serilog.Sinks.NewRelic.Logs.sln'
-  sdk_project_name: 'src/Serilog.Sinks.NewRelic.Logs'
+  sdk_project_name: 'Serilog.Sinks.NewRelic.Logs'
   sdk_project_path: 'src/Serilog.Sinks.NewRelic.Logs/Serilog.Sinks.NewRelic.Logs.csproj'
   net_version: 'netstandard2.0'
   execute_test: 'false'
