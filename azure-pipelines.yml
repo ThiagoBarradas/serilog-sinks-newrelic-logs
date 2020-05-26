@@ -15,7 +15,7 @@ variables:
   test_project_base_folder: ''
   test_project_path: ''
   execute_sonarcloud: 'true'
-  sonarcloud_project: 'ThiagoBarradas_aspnet-serilog-sinks-newrelic-logs'
+  sonarcloud_project: 'ThiagoBarradas_serilog-sinks-newrelic-logs'
   sonarcloud_organization: 'thiagobarradas-github'
   sonarcloud_account: 'SonarCloudBarradas' 
 
