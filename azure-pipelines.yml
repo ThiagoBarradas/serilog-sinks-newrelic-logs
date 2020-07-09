@@ -7,6 +7,7 @@
 # - for linux environment
 
 variables:
+  organization: 'barradas'
   solution_path: 'Serilog.Sinks.NewRelic.Logs.sln'
   sdk_project_name: 'Serilog.Sinks.NewRelic.Logs'
   sdk_project_path: 'src/Serilog.Sinks.NewRelic.Logs/Serilog.Sinks.NewRelic.Logs.csproj'
@@ -20,16 +21,23 @@ variables:
   sonarcloud_account: 'SonarCloudBarradas' 
 
 trigger:
-- release/*  
-- hotfix/* 
-- master
-- develop
+  branches:
+    include:
+    - release/*  
+    - hotfix/*
+    - develop
+  tags:
+    include: 
+    - '*'
 
 pr:
-- develop
+  branches:
+    include:
+    - develop
+    - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest' 
 
 stages:
 - stage: BuildApp
@@ -40,12 +48,15 @@ stages:
     variables: 
       current_counter: $[counter(variables['Build.SourceBranchName'], 1)]    
     steps:
-    - task: gittools.gitversion.gitversion-task.GitVersion@5
-      condition: eq(variables['Build.SourceBranchName'], 'master')
-      displayName: 'Get version from git tag for master'
-      inputs:
-        updateAssemblyInfo: false
     - bash: |
+        if [[ "$(Build.SourceVersionMessage)" =~ "hotfix/" ]];
+        then 
+            echo "##vso[task.setvariable variable=IsHotfix;isOutput=true]true"
+            echo "##vso[task.setvariable variable=PreviousPrefix;isOutput=true]hotfix"
+        else
+            echo "##vso[task.setvariable variable=IsHotfix;isOutput=true]false"
+            echo "##vso[task.setvariable variable=PreviousPrefix;isOutput=true]release"
+        fi
         if [[ "$(Build.SourceBranch)" =~ "/hotfix/" ]] ||
            [[ "$(Build.SourceBranch)" =~ "/release/" ]]; 
         then
@@ -53,19 +64,41 @@ stages:
             echo "Version: $(Build.SourceBranchName)"
             echo "         $(Build.SourceBranchName)-preview.$(current_counter)"
             echo "##vso[build.updatebuildnumber]$(Build.SourceBranchName)-preview.$(current_counter)"
-        elif [ "$(Build.SourceBranchName)" = "master" ];
+            echo "##vso[task.setvariable variable=PureVersion;isOutput=true]$(Build.SourceBranchName)"
+        elif [[ "$(Build.SourceBranch)" =~ "/tags/" ]];
         then
             echo "Generate Release Version"
-            echo "Version: $(GitVersion.SemVer)"
-            echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
+            echo "Version: $(Build.SourceBranchName)"
+            echo "##vso[build.updatebuildnumber]$(Build.SourceBranchName)"
+            echo "##vso[task.setvariable variable=SonarMasterWhenTag;isOutput=true]sonar.branch.name=master"
+            echo "##vso[task.setvariable variable=PureVersion;isOutput=true]$(Build.SourceBranchName)"
         else
             echo "Generate Development Version"
-            echo "Version: $(Build.BuildNumber)"
+            echo "##vso[build.updatebuildnumber]$(Build.BuildNumber)-develop"
+            echo "Version: $(Build.BuildNumber)-develop"
         fi
       displayName: Update Version Number
       name: UpdateBuildVersionTask
+    - bash: |
+        STAGING_URL="https://dev.azure.com/$(organization)/$(System.TeamProject)/_apis/build/status/$(System.DefinitionId)?branchName=$(UpdateBuildVersionTask.PreviousPrefix)/$(Build.BuildNumber)&stageName=DeployPackage"
+        STAGING_RESULT=$`curl --silent $STAGING_URL`
+        echo "URL: $STAGING_URL" 
+        echo "RESULT: $STAGING_RESULT"
+        SUCCEEDED=$`echo $STAGING_RESULT | grep -P 'succeeded' -o | head -n 1`
+        if [[ "$STAGING_RESULT" =~ "succeeded" ]];
+        then
+            echo "$PREVIOUS_PREFIX branch is ok!"
+        else
+            echo "$PREVIOUS_PREFIX branch is not ok!"
+            exit 1
+        fi
+      condition: contains(variables['Build.SourceBranch'], '/tags/')
+      displayName: Break if release/hotfix branch is not passing
+      name: BreakIsReleaseOrHotfixIsNotPassing
+
   - job: Build
-    dependsOn: UpdateBuildVersion
+    dependsOn: 
+    - UpdateBuildVersion
     condition: succeeded()
     workspace:
       clean: all
@@ -84,7 +117,9 @@ stages:
         artifact: $(sdk_project_name)
 
   - job: UnitTests
-    dependsOn: Build
+    dependsOn: 
+    - UpdateBuildVersion
+    - Build
     workspace:
       clean: all
     condition: and(succeeded(), eq(variables['execute_test'], 'true'))
@@ -103,6 +138,7 @@ stages:
                           "-targetdir:$(test_project_base_folder)/results/Cobertura" \
                           "-reporttypes:Cobertura;HTMLInline;HTMLChart"
         echo "##vso[task.setvariable variable=OpencoverSonar;isOutput=true]sonar.cs.opencover.reportsPaths=$(Pipeline.Workspace)/result.opencover.xml"
+        ls $(System.DefaultWorkingDirectory)/$(test_project_base_folder)/results
       displayName: Running Unit Tests
       name: UnitTestsTask
     - task: PublishPipelineArtifact@1
@@ -125,16 +161,22 @@ stages:
         testRunTitle: 'Collecting Test Results'
 
   - job: QualityAnalysis
-    dependsOn: UnitTests
+    dependsOn: 
+    - UpdateBuildVersion
+    - Build
+    - UnitTests
     condition: |
       and
       (
+        in(dependencies.UpdateBuildVersion.result, 'Succeeded'),
+        in(dependencies.Build.result, 'Succeeded', 'Skipped'),
         in(dependencies.UnitTests.result, 'Succeeded', 'Skipped'),
         eq(variables['execute_sonarcloud'], 'true')
       )
     workspace:
       clean: all
     variables:
+      SonarMasterWhenTag: $[ dependencies.UpdateBuildVersion.outputs['UpdateBuildVersionTask.SonarMasterWhenTag'] ]
       OpencoverSonar: $[ dependencies.UnitTests.outputs['UnitTestsTask.OpencoverSonar'] ]
     steps:
     - task: DownloadPipelineArtifact@2
@@ -154,8 +196,9 @@ stages:
           sonar.sourceEncoding=UTF-8
           sonar.scm.forceReloadAll=true
           $(OpencoverSonar)
+          $(SonarMasterWhenTag)
     - script: |
-        dotnet build "$(sdk_project_path)"
+        dotnet build "$(solution_path)"
       displayName: Runnig Build For Analysis
     - task: SonarCloudAnalyze@1
       displayName: Finish Sonarqube Analysis
@@ -169,30 +212,38 @@ stages:
         organization: '$(sonarcloud_organization)'
 
   - job: PackingNuget
-    dependsOn: QualityAnalysis 
+    dependsOn:
+    - UpdateBuildVersion
+    - Build
+    - UnitTests
+    - QualityAnalysis 
     workspace:
       clean: all
     condition: |
       and
       (
+        eq(dependencies.UpdateBuildVersion.result, 'Succeeded'),
+        in(dependencies.Build.result, 'Succeeded', 'Skipped'),
+        in(dependencies.UnitTests.result, 'Succeeded', 'Skipped'),
         in(dependencies.QualityAnalysis.result, 'Succeeded', 'Skipped'),
         or
         (
           contains(variables['Build.SourceBranch'], '/hotfix/'),
           contains(variables['Build.SourceBranch'], '/release/'),
-          eq(variables['Build.SourceBranchName'], 'master')
+          contains(variables['Build.SourceBranch'], '/tags/')
         )
       )
     variables:
       ReleaseVersion: $(Build.BuildNumber) 
+      PureVersion: $[ dependencies.UpdateBuildVersion.outputs['UpdateBuildVersionTask.PureVersion'] ]
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'Packing Release'
       inputs:
-        command: pack
-        packagesToPack: '$(sdk_project_path)'
-        versioningScheme: byEnvVar
-        versionEnvVar: ReleaseVersion
+        command: 'custom'
+        projects: '$(sdk_project_path)'
+        custom: 'pack'
+        arguments: '-p:Configuration=Release -p:PackageVersion=$(ReleaseVersion) -p:Version=$(PureVersion) --output $(Build.ArtifactStagingDirectory)'
     - task: PublishPipelineArtifact@1
       displayName: Store Nuget Packages
       inputs:
@@ -209,7 +260,7 @@ stages:
       ( 
         contains(variables['Build.SourceBranch'], '/hotfix/'),
         contains(variables['Build.SourceBranch'], '/release/'),
-        eq(variables['Build.SourceBranchName'], 'master')
+        contains(variables['Build.SourceBranch'], '/tags/')
       )
     )
   variables:
