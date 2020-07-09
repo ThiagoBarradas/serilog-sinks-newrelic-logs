@@ -198,7 +198,7 @@ stages:
           $(OpencoverSonar)
           $(SonarMasterWhenTag)
     - script: |
-        dotnet build "$(solution_path)"
+        dotnet build "$(sdk_project_path)"
       displayName: Runnig Build For Analysis
     - task: SonarCloudAnalyze@1
       displayName: Finish Sonarqube Analysis
