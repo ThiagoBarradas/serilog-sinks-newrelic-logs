@@ -40,6 +40,10 @@ namespace Serilog.Sinks.NewRelic.Logs
             this.Message = logEvent.RenderMessage(formatProvider);
             this.Attributes.Add("level", logEvent.Level.ToString());
             this.Attributes.Add("stack_trace", logEvent.Exception?.StackTrace ?? "");
+            if (logEvent.Exception != null) 
+            {
+                this.Attributes.Add("exception", logEvent.Exception.ToString() ?? "");
+            }
 
             foreach (var property in logEvent.Properties)
             {

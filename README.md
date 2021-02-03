@@ -35,6 +35,7 @@ This sink adds four additional properties:
 * `application` holds the value from `applicationName`
 * `level` is the actual log level of the event.
 * `stack_trace` holds the stack trace portion of an exception.
+* `exception` holds the `.toString()` of an exception.
 
 If `newrelic.linkingmetadata` property is present in an event, it will be unrolled into individual NewRelic properties used for "logs in context".
 
@@ -42,6 +43,29 @@ If `newrelic.linkingmetadata` property is present in an event, it will be unroll
 
 ```
 PM> Install-Package Serilog.Sinks.NewRelic.Logs
+```
+
+### JSON configuration
+
+It is possible to configure the sink using [Serilog.Settings.Configuration](https://github.com/serilog/serilog-settings-configuration) by specifying the license key and other desired parameters in `appsettings.json`:
+
+```
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.NewRelic.Logs" ],
+    "WriteTo": [
+      {
+        "Name": "NewRelicLogs",
+        "Args": {
+          "applicationName": "NewRelicLogTestSample",
+          "licenseKey": "58e9892abd3f09d91b0db0d0e9e95628FFFFNRAL"
+          //... other parameters
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId", "WithNewRelicLogsInContext" ]
+  }
+}
 ```
 
 ## Contributors
