@@ -35,6 +35,7 @@ This sink adds four additional properties:
 * `application` holds the value from `applicationName`
 * `level` is the actual log level of the event.
 * `stack_trace` holds the stack trace portion of an exception.
+* `exception` holds the `.toString()` of an exception.
 
 If `newrelic.linkingmetadata` property is present in an event, it will be unrolled into individual NewRelic properties used for "logs in context".
 
