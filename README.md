@@ -16,6 +16,14 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 ```
 
+If you have new relic agent and use environment variables `NEW_RELIC_APP_NAME` and `NEW_RELIC_LICENSE_KEY`, you can do just:
+
+```csharp
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.NewRelicLogs()
+    .CreateLogger();
+```
+
 The available parameters are:
 * `applicationName` of the current application in NewRelic If the parameter is omitted, then the value of the "NewRelic.AppName" appSetting will be used.
 * `endpointUrl` is the ingestion URL of NewRelic Logs. The US endpoint is used by default if this value is omitted.
