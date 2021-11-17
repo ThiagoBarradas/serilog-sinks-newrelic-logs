@@ -39,13 +39,18 @@ namespace Serilog
                 throw new ArgumentNullException(nameof(loggerSinkConfiguration));
             }
 
-            if (string.IsNullOrEmpty(applicationName))
+            if (string.IsNullOrWhiteSpace(applicationName))
             {
                 #if NETFRAMEWORK
                 applicationName = ConfigurationManager.AppSettings["NewRelic.AppName"];
                 #endif
 
-                if (string.IsNullOrEmpty(applicationName))
+                if (string.IsNullOrWhiteSpace(applicationName))
+                {
+                    applicationName = Environment.GetEnvironmentVariable("NEW_RELIC_APP_NAME");
+                }
+
+                if (string.IsNullOrWhiteSpace(applicationName))
                 {
                     throw new ArgumentException("Must supply an application name either as a parameter or an appsetting", nameof(applicationName));
                 }
@@ -57,7 +62,7 @@ namespace Serilog
                 endpointUrl = ConfigurationManager.AppSettings["NewRelic.EndpointUrl"];
                 #endif
 
-                if (string.IsNullOrEmpty(endpointUrl))
+                if (string.IsNullOrWhiteSpace(endpointUrl))
                 {
                     throw new ArgumentException("NewRelic Logs API endpoint URL must be supplied");
                 }
@@ -69,6 +74,11 @@ namespace Serilog
                 licenseKey = ConfigurationManager.AppSettings["NewRelic.LicenseKey"];
                 insertKey = ConfigurationManager.AppSettings["NewRelic.InsertKey"];
                 #endif
+
+                if (string.IsNullOrWhiteSpace(licenseKey))
+                {
+                    licenseKey = Environment.GetEnvironmentVariable("NEW_RELIC_LICENSE_KEY");
+                }
 
                 if (string.IsNullOrWhiteSpace(licenseKey) && string.IsNullOrWhiteSpace(insertKey))
                 {
