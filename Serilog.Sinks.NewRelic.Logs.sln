@@ -31,6 +31,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.NewRelic.Logs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.NewRelic.Logs.Playground.NET461", "sample\Serilog.Sinks.NewRelic.Logs.Playground.NET461\Serilog.Sinks.NewRelic.Logs.Playground.NET461.csproj", "{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{B1386F56-919D-4B51-A599-DA4C16947D3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.NewRelic.Logs.Playground.NET6", "sample\Serilog.Sinks.NewRelic.Logs.Playground.NET6\Serilog.Sinks.NewRelic.Logs.Playground.NET6.csproj", "{BFCCA24A-E225-4017-8F81-CCD4193C2277}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,10 @@ Global
 		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21B9673F-0A6B-41E3-BFF1-3404A3318BDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCCA24A-E225-4017-8F81-CCD4193C2277}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCCA24A-E225-4017-8F81-CCD4193C2277}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCCA24A-E225-4017-8F81-CCD4193C2277}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCCA24A-E225-4017-8F81-CCD4193C2277}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +65,7 @@ Global
 		{58888E6E-80BA-4F62-ADDF-A555B8CB6C4E} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
 		{F891B038-B0A2-44E9-8F6A-6E14B5B39F95} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
 		{A58D3608-75B5-47C4-A246-C93AC544178D} = {30EC5940-9B2D-485B-B854-F978C4B8BD5A}
+		{BFCCA24A-E225-4017-8F81-CCD4193C2277} = {B1386F56-919D-4B51-A599-DA4C16947D3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C95D3C20-A9C4-43CC-89F5-CFA37A2C8D83}

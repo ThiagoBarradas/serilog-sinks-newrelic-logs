@@ -2,6 +2,7 @@
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.NewRelic.Logs;
+using Serilog.Sinks.PeriodicBatching;
 using System;
 
 namespace Serilog
@@ -41,9 +42,9 @@ namespace Serilog
 
             if (string.IsNullOrWhiteSpace(applicationName))
             {
-                #if NETFRAMEWORK
+#if NETFRAMEWORK
                 applicationName = ConfigurationManager.AppSettings["NewRelic.AppName"];
-                #endif
+#endif
 
                 if (string.IsNullOrWhiteSpace(applicationName))
                 {
@@ -58,9 +59,9 @@ namespace Serilog
 
             if (string.IsNullOrWhiteSpace(endpointUrl))
             {
-                #if NETFRAMEWORK
+#if NETFRAMEWORK
                 endpointUrl = ConfigurationManager.AppSettings["NewRelic.EndpointUrl"];
-                #endif
+#endif
 
                 if (string.IsNullOrWhiteSpace(endpointUrl))
                 {
@@ -70,10 +71,10 @@ namespace Serilog
 
             if (string.IsNullOrWhiteSpace(licenseKey) && string.IsNullOrWhiteSpace(insertKey))
             {
-                #if NETFRAMEWORK
+#if NETFRAMEWORK
                 licenseKey = ConfigurationManager.AppSettings["NewRelic.LicenseKey"];
                 insertKey = ConfigurationManager.AppSettings["NewRelic.InsertKey"];
-                #endif
+#endif
 
                 if (string.IsNullOrWhiteSpace(licenseKey))
                 {
@@ -88,7 +89,15 @@ namespace Serilog
 
             var defaultPeriod = period ?? NewRelicLogsSink.DefaultPeriod;
 
-            ILogEventSink sink = new NewRelicLogsSink(endpointUrl, applicationName, licenseKey, insertKey, batchSizeLimit, defaultPeriod);
+            IBatchedLogEventSink newRelicSink = new NewRelicLogsSink(endpointUrl, applicationName, licenseKey, insertKey, batchSizeLimit, defaultPeriod);
+
+            var options = new PeriodicBatchingSinkOptions
+            {
+                BatchSizeLimit = batchSizeLimit,
+                Period = defaultPeriod
+            };
+
+            ILogEventSink sink = new PeriodicBatchingSink(newRelicSink, options);
 
             return loggerSinkConfiguration.Sink(sink, restrictedToMinimumLevel);
         }

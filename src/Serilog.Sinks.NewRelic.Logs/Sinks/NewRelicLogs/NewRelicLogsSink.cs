@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Serilog.Sinks.NewRelic.Logs
 {
-    internal class NewRelicLogsSink : PeriodicBatchingSink
+    internal class NewRelicLogsSink : IBatchedLogEventSink
     {
         public const int DefaultBatchSizeLimit = 1000;
 
@@ -27,29 +27,34 @@ namespace Serilog.Sinks.NewRelic.Logs
 
         public string InsertKey { get; }
 
+        public int BatchSizeLimit { get; }
+
+        public TimeSpan Period { get; }
+
         private IFormatProvider FormatProvider { get; }
 
         public NewRelicLogsSink(
-            string endpointUrl, 
-            string applicationName, 
-            string licenseKey, 
-            string insertKey, 
-            int batchSizeLimit, 
-            TimeSpan period, 
+            string endpointUrl,
+            string applicationName,
+            string licenseKey,
+            string insertKey,
+            int batchSizeLimit,
+            TimeSpan period,
             IFormatProvider formatProvider = null)
-            : base(batchSizeLimit, period)
         {
             this.EndpointUrl = endpointUrl;
             this.ApplicationName = applicationName;
             this.LicenseKey = licenseKey;
             this.InsertKey = insertKey;
             this.FormatProvider = formatProvider;
+            this.BatchSizeLimit = batchSizeLimit;
+            this.Period = period;
         }
 
-        protected override async Task EmitBatchAsync(IEnumerable<LogEvent> eventsEnumerable)
+        public async Task EmitBatchAsync(IEnumerable<LogEvent> batch)
         {
             var payload = new NewRelicLogPayload(this.ApplicationName);
-            var events = eventsEnumerable.ToList();
+            var events = batch.ToList();
 
             foreach (var _event in events)
             {
@@ -68,6 +73,11 @@ namespace Serilog.Sinks.NewRelic.Logs
             var body = Serialize(new List<object> { payload }, events.Count);
 
             await this.SendToNewRelicLogsAsync(body).ConfigureAwait(false);
+        }
+
+        public async Task OnEmptyBatchAsync()
+        {
+            await EmitBatchAsync(Enumerable.Empty<LogEvent>());
         }
 
         private Task SendToNewRelicLogsAsync(string body)
