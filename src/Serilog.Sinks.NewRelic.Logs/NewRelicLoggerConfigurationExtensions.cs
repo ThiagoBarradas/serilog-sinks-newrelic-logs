@@ -1,8 +1,9 @@
 ﻿using Serilog.Configuration;
-using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.NewRelic.Logs;
+using Serilog.Sinks.PeriodicBatching;
 using System;
+using Serilog.Core;
 
 namespace Serilog
 {
@@ -88,9 +89,20 @@ namespace Serilog
 
             var defaultPeriod = period ?? NewRelicLogsSink.DefaultPeriod;
 
-            ILogEventSink sink = new NewRelicLogsSink(endpointUrl, applicationName, licenseKey, insertKey, batchSizeLimit, defaultPeriod);
+            IBatchedLogEventSink sink = new NewRelicLogsSink(endpointUrl, applicationName, licenseKey, insertKey);
 
-            return loggerSinkConfiguration.Sink(sink, restrictedToMinimumLevel);
+            var batchingOptions = new PeriodicBatchingSinkOptions
+            {
+                BatchSizeLimit = batchSizeLimit,
+                Period = defaultPeriod,
+                EagerlyEmitFirstEvent = true,
+                //TODO: Exposing this to the caller would require adding a parameter to this method. Is that something you want?
+                QueueLimit = 100_000 // 100_000 is the default
+            };
+
+            ILogEventSink batchingSink = new PeriodicBatchingSink(sink, batchingOptions);
+
+            return loggerSinkConfiguration.Sink(batchingSink, restrictedToMinimumLevel);
         }
     }
 }
